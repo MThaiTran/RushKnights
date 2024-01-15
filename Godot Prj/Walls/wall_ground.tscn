@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://bh1a1b1vjkgs2"]
+
+[ext_resource type="Script" path="res://Walls/wall_ground.gd" id="1_8th08"]
+[ext_resource type="Texture2D" uid="uid://kjygo651jij4" path="res://Player_sprites/tiles.png" id="1_pjd58"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_stres"]
+size = Vector2(48, 16)
+
+[node name="AnimatableBody2D" type="AnimatableBody2D" groups=["Obs"]]
+script = ExtResource("1_8th08")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture_repeat = 2
+position = Vector2(24, 8)
+texture = ExtResource("1_pjd58")
+region_enabled = true
+region_rect = Rect2(64, 112, 48, 16)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(24, 8)
+shape = SubResource("RectangleShape2D_stres")

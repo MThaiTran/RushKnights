@@ -1,0 +1,62 @@
+[gd_scene load_steps=12 format=3 uid="uid://ccra48qpyekwb"]
+
+[ext_resource type="PackedScene" uid="uid://b8hxjyf4ygrkb" path="res://level_1.tscn" id="1_gq63v"]
+[ext_resource type="PackedScene" uid="uid://d3rgapo5gxams" path="res://player.tscn" id="1_mncdo"]
+[ext_resource type="Script" path="res://main.gd" id="1_op8do"]
+[ext_resource type="PackedScene" uid="uid://bh1a1b1vjkgs2" path="res://Walls/wall_ground.tscn" id="3_kvgno"]
+[ext_resource type="PackedScene" uid="uid://cswpu5bbanxkm" path="res://Player_2.tscn" id="4_4nr6y"]
+[ext_resource type="PackedScene" uid="uid://d28k0fhw5l8ud" path="res://lava.tscn" id="7_dyoh2"]
+[ext_resource type="AudioStream" uid="uid://cox0ub01xctqc" path="res://Sound/516076__breviceps__pirate-band-performs-drunken-sailor.wav" id="7_qjv6f"]
+[ext_resource type="AudioStream" uid="uid://dfl0eh0vhlv30" path="res://Sound/382310__myfox14__game-over-arcade.wav" id="8_dgxc3"]
+[ext_resource type="AudioStream" uid="uid://cde8vk3w50a6f" path="res://Sound/565886__dundalkkirk__jumpgrunt3.wav" id="9_x16lo"]
+[ext_resource type="PackedScene" uid="uid://xtjwrls1c4yr" path="res://menu.tscn" id="10_sakic"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ct88f"]
+size = Vector2(272, 20)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_op8do")
+platform = ExtResource("3_kvgno")
+P2 = ExtResource("4_4nr6y")
+
+[node name="Level1" parent="." instance=ExtResource("1_gq63v")]
+
+[node name="Menu" parent="." instance=ExtResource("10_sakic")]
+
+[node name="Player" parent="." instance=ExtResource("1_mncdo")]
+position = Vector2(16, 272)
+
+[node name="WallTimer" type="Timer" parent="."]
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(112, 320)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(8, 0)
+shape = SubResource("RectangleShape2D_ct88f")
+
+[node name="Type2" type="Timer" parent="."]
+one_shot = true
+
+[node name="ScoreTimer1" type="Timer" parent="."]
+
+[node name="Lava" parent="." instance=ExtResource("7_dyoh2")]
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="GameOver" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("8_dgxc3")
+
+[node name="JumpEffect" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("9_x16lo")
+
+[node name="Music" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("7_qjv6f")
+
+[connection signal="start1" from="Menu" to="." method="_on_menu_start_1"]
+[connection signal="start2" from="Menu" to="." method="_on_menu_start_2"]
+[connection signal="timeout" from="WallTimer" to="." method="_on_wall_timer_timeout"]
+[connection signal="body_entered" from="Area2D" to="." method="exit"]
+[connection signal="timeout" from="ScoreTimer1" to="." method="_on_score_timer_timeout"]
+[connection signal="body_entered" from="Lava" to="." method="game_over"]
+[connection signal="finished" from="Sounds/Music" to="." method="_on_music_finished"]

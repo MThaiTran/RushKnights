@@ -1,0 +1,235 @@
+[gd_scene load_steps=3 format=3 uid="uid://xtjwrls1c4yr"]
+
+[ext_resource type="FontFile" uid="uid://dwvm0fmeky0hw" path="res://Xolonium-Regular.ttf" id="2_msaw6"]
+
+[sub_resource type="GDScript" id="GDScript_yh1h8"]
+script/source = "extends Control
+
+signal start1 
+signal start2
+var mode
+
+func _on_start_button_pressed():
+	$StartButton.hide()
+	$GameName.position.y = 32
+	$ChoiceBox.show()
+
+func _on_exit_pressed():
+	$StartButton.show()
+	$GameName.position.y = 128
+	$ChoiceBox.hide()
+
+func _on_1player_pressed():
+	start_game()
+	mode = 1 
+	start1.emit()
+	
+func _on_2players_pressed():
+	start_game()
+	mode = 2
+	start2.emit()
+
+func start_game():
+	$HUD.show()
+	$GameName.hide()
+	$ChoiceBox.hide()
+	$Pause.show()
+	
+func update_score(score):
+	$HUD/Score.text = str(score)
+
+func game_over(text):
+	$HUD/Message.text = text
+	$HUD/Message.show()
+	
+	$HUD/Timer.start()
+	await $HUD/Timer.timeout
+	get_tree().call_group(\"Obs\",\"queue_free\")
+	
+	update_score(0)
+	$HUD/Message.hide()
+	$HUD.hide()
+	$StartButton.show()
+
+func _on_pause_pressed():
+	$HUD.hide()
+	$GameName.show()
+	$PauseMenu.show()
+	$Pause.hide()
+
+func _on_resume_pressed():
+	$HUD.show()
+	$GameName.hide()
+	$PauseMenu.hide()
+	$Pause.show()
+
+func _on_exit_pause_pressed():
+	$PauseMenu.hide()
+	$ChoiceBox.show()
+	$\"../Player\".hide()
+	$\"../Player/CollisionShape2D\".set_deferred(\"disabled\",true)
+	if mode == 2 : $\"../Player_2\".queue_free()
+	$\"../Sounds/GameOver\".play() 
+	$\"../WallTimer\".stop()
+	$\"../ScoreTimer1\".stop()
+	get_tree().call_group(\"Obs\",\"queue_free\")
+	update_score(0)
+#	$\"../Menu\".game_over(\"Game Over\")
+"
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = SubResource("GDScript_yh1h8")
+
+[node name="GameName" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 16.0
+offset_top = 108.0
+offset_right = 184.0
+offset_bottom = 141.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_msaw6")
+theme_override_font_sizes/font_size = 24
+text = "Rush Knights"
+
+[node name="StartButton" type="Button" parent="."]
+custom_minimum_size = Vector2(46, 0)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = 205.0
+offset_right = 172.0
+offset_bottom = 242.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.501961, 0.890196, 1, 1)
+theme_override_fonts/font = ExtResource("2_msaw6")
+theme_override_font_sizes/font_size = 23
+text = "Start Game"
+icon_alignment = 1
+
+[node name="ChoiceBox" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 37.0
+offset_top = 101.0
+offset_right = 163.0
+offset_bottom = 223.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="1Player" type="Button" parent="ChoiceBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_msaw6")
+theme_override_font_sizes/font_size = 24
+text = "1 Player"
+
+[node name="2Players" type="Button" parent="ChoiceBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_msaw6")
+theme_override_font_sizes/font_size = 24
+text = "2 Players"
+
+[node name="Exit" type="Button" parent="ChoiceBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_msaw6")
+theme_override_font_sizes/font_size = 24
+text = "Exit"
+
+[node name="HUD" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="Score" type="Label" parent="HUD"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_msaw6")
+theme_override_font_sizes/font_size = 27
+text = "0"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Message" type="Label" parent="HUD"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -37.0
+offset_right = 120.0
+offset_bottom = 37.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_msaw6")
+theme_override_font_sizes/font_size = 27
+text = "Game Over!"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Timer" type="Timer" parent="HUD"]
+wait_time = 2.0
+one_shot = true
+
+[node name="Pause" type="Button" parent="."]
+visible = false
+layout_mode = 1
+offset_left = 176.0
+offset_right = 240.0
+offset_bottom = 31.0
+theme_override_fonts/font = ExtResource("2_msaw6")
+text = "Menu"
+
+[node name="PauseMenu" type="HBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+offset_left = 57.0
+offset_top = 128.0
+offset_right = 178.0
+offset_bottom = 156.0
+scale = Vector2(1.08, 1)
+
+[node name="Resume" type="Button" parent="PauseMenu"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_msaw6")
+text = "Resume"
+
+[node name="Exit" type="Button" parent="PauseMenu"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_msaw6")
+text = "Exit"
+
+[connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="ChoiceBox/1Player" to="." method="_on_1player_pressed"]
+[connection signal="pressed" from="ChoiceBox/2Players" to="." method="_on_2players_pressed"]
+[connection signal="pressed" from="ChoiceBox/Exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="Pause" to="." method="_on_pause_pressed"]
+[connection signal="pressed" from="PauseMenu/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="PauseMenu/Exit" to="." method="_on_exit_pause_pressed"]

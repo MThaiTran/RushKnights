@@ -1,0 +1,66 @@
+[gd_scene load_steps=11 format=3 uid="uid://be06orowestom"]
+
+[ext_resource type="Texture2D" uid="uid://bkestdi4w1uaf" path="res://Player_sprites/attack_skeleton1.png" id="1_c5wyr"]
+[ext_resource type="Texture2D" uid="uid://bqysmdd1dwwy3" path="res://Player_sprites/attack_skeleton2.png" id="2_oa0hn"]
+[ext_resource type="Texture2D" uid="uid://ddt05cjns4dfa" path="res://Player_sprites/attack_skeleton3.png" id="3_shknr"]
+[ext_resource type="Texture2D" uid="uid://hymx3yog3fa5" path="res://Player_sprites/idle_skeleton1.png" id="4_reyg2"]
+[ext_resource type="Texture2D" uid="uid://2rr1hr6cold4" path="res://Player_sprites/idle_skeleton2.png" id="5_a7fpx"]
+[ext_resource type="Texture2D" uid="uid://cvlxdsskffo6o" path="res://Player_sprites/idle_skeleton3.png" id="6_gfw0x"]
+[ext_resource type="Texture2D" uid="uid://devkmwy200gdp" path="res://Player_sprites/running_skeleton1.png" id="7_n1gdf"]
+[ext_resource type="Texture2D" uid="uid://dle022fslwas1" path="res://Player_sprites/running_skeleton2.png" id="8_ltlfb"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sgsqb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_c5wyr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_oa0hn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_shknr")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_reyg2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_a7fpx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_gfw0x")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_n1gdf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_ltlfb")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_odbwe"]
+size = Vector2(13, 15)
+
+[node name="Skeleton" type="RigidBody2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_sgsqb")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 0.5)
+shape = SubResource("RectangleShape2D_odbwe")
